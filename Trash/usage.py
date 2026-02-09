@@ -20,7 +20,7 @@ def analyze_cpu_usage(df):
     }
 
 if __name__ == "__main__":
-    from ingestion import load_azure_metrics
+    from Trash.ingestion import load_azure_metrics
  
     df = load_azure_metrics("Data/processor.csv")
     result = analyze_cpu_usage(df)

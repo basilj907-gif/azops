@@ -1,8 +1,8 @@
-from ingestion import load_azure_metrics
-from usage import analyze_cpu_usage
-from rightsizing import recommend_rightsizing
-from cost_saving import estimate_cost_savings
-from prediction import predict_cpu_usage
+from Trash.ingestion import load_azure_metrics
+from Trash.usage import analyze_cpu_usage
+from Trash.rightsizing import recommend_rightsizing
+from Trash.cost_saving import estimate_cost_savings
+from Trash.prediction import predict_cpu_usage
  
 # Load data
 df = load_azure_metrics("Data/processor.csv")

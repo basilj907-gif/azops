@@ -7,4 +7,4 @@ def predict_cost(cost_df):
     slope, intercept = np.polyfit(x, y, 1)
     predicted = slope*(len(y)) + intercept
  
-    return {"predicted_cost_next_month": round(predicted,2)}
+    return {"predicted_cost_next_month": float(round(predicted,2))}

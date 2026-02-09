@@ -66,7 +66,7 @@ def predict_cpu_usage(df, periods=10, model_type='linear'):
     }
 
 if __name__ == "__main__":
-    from ingestion import load_azure_metrics
+    from Trash.ingestion import load_azure_metrics
     
     df = load_azure_metrics("Data/processor.csv")
     

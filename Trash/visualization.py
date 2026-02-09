@@ -2,8 +2,8 @@ import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 import numpy as np
-from ingestion import load_azure_metrics
-from prediction import predict_cpu_usage
+from Trash.ingestion import load_azure_metrics
+from Trash.prediction import predict_cpu_usage
 
 def plot_prediction(df, periods=20, model_type='polynomial'):
     """

@@ -2,61 +2,68 @@ import pandas as pd
 import random
 import time
 from datetime import datetime
- 
+import os
+
 METRICS_FILE = "Data/metrics_stream.csv"
 COST_FILE = "Data/cost_history_stream.csv"
-VM_ID = "vm-101"
- 
-# timers
+
+VMS = {
+    "vm-101": {"base_cpu": 35},
+    "vm-102": {"base_cpu": 10},   # underutilized
+    "vm-103": {"base_cpu": 75},   # highly utilized
+    "vm-104": {"base_cpu": 50},   # moderate utilization
+}
+
 last_cost_time = 0
- 
-def generate_cpu():
-    base = 30
-    variation = random.uniform(-15, 25)
-    return max(5, min(95, base + variation))
- 
+
+def generate_cpu(base):
+    return max(5, min(95, base + random.uniform(-10, 15)))
+
 def generate_cost():
     return random.uniform(450, 550)
- 
-print("Starting data simulator...")
- 
+
 while True:
- 
     current_time = time.time()
- 
-    # ---- Generate CPU metrics every minute ----
-    metrics_row = {
-        "timestamp": datetime.utcnow(),
-        "vm_id": VM_ID,
-        "cpu_usage_pct": round(generate_cpu(), 2)
-    }
- 
-    pd.DataFrame([metrics_row]).to_csv(
-        METRICS_FILE,
-        mode="a",
-        header=False,
-        index=False
-    )
- 
-    print("Metrics generated:", metrics_row)
- 
-    # ---- Generate cost once per hour ----
-    if current_time - last_cost_time >= 3600:
-        cost_row = {
-            "month": datetime.utcnow().strftime("%Y-%m"),
-            "vm_id": VM_ID,
-            "monthly_cost": round(generate_cost(), 2)
+
+    # ---- metrics for each VM ----
+    for vm_id, config in VMS.items():
+        row = {
+            "timestamp": datetime.utcnow(),
+            "vm_id": vm_id,
+            "cpu_usage_pct": round(generate_cpu(config["base_cpu"]), 2)
         }
- 
-        pd.DataFrame([cost_row]).to_csv(
-            COST_FILE,
+
+        header_needed = not os.path.exists(METRICS_FILE)
+
+        pd.DataFrame([row]).to_csv(
+            METRICS_FILE,
             mode="a",
-            header=False,
+            header=header_needed,
             index=False
         )
- 
-        print("Cost generated:", cost_row)
- 
+
+        print("Metrics:", row)
+
+    # ---- cost history hourly ----
+    if current_time - last_cost_time >= 3600:
+        for vm_id in VMS:
+            row = {
+                "month": datetime.utcnow().strftime("%Y-%m"),
+                "vm_id": vm_id,
+                "monthly_cost": round(generate_cost(), 2)
+            }
+
+            header_needed = not os.path.exists(COST_FILE)
+
+            pd.DataFrame([row]).to_csv(
+                COST_FILE,
+                mode="a",
+                header=header_needed,
+                index=False
+            )
+
+            print("Cost:", row)
+
         last_cost_time = current_time
- 
+
     time.sleep(60)
